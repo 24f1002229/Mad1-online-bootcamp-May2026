@@ -1,0 +1,21 @@
+{% extends "Admin_dashboard.html" %}
+{% block content %}
+
+<h1 style="text-align: center;"> Add Course form </h1>
+<form action="/add_course/{{email}}" method="POST">
+  <div class="mb-3">
+    <label for="number" class="form-label"> Id </label>
+    <input type="number" class="form-control" id="number" name="id" >
+  </div>
+  <div class="mb-3">
+    <label for="text" class="form-label">Name</label>
+    <input type="text" class="form-control" id="text" name="name">
+  </div>
+  <div class="mb-3">
+    <label for="text" class="form-label">Description</label>
+    <input type="text" class="form-control" id="text" name="description">
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+{% endblock %}

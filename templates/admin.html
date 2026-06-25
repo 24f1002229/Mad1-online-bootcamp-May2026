@@ -1,0 +1,31 @@
+{% extends "Admin_dashboard.html" %}
+{% block content %}
+
+<h1 style="text-align: center;"> Admin Dashboard </h1>
+
+{% if courses %}
+    <div class="row">
+    {% for course in courses %}
+    <div class="col">
+        <div class="card" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title"> {{course.name}} </h5>
+            <div class="card">
+                <div class="card-body">
+                    This is some text within a card body.
+                </div>
+            </div>
+            <a href="/edit_course/{{course.id}}/{{email}}" class="card-link">Edit Course</a>
+            <a href="/delete_course/{{course.id}}/{{email}}" class="card-link">Delete Course</a>
+        </div>
+        </div>
+        
+    </div>
+    {%endfor%}
+</div>
+{% endif %}
+
+<div> <a href="/add_course/{{email}}" type="button" class="btn btn-success"> Add Course </a></div>
+
+
+{% endblock %}
