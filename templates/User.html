@@ -2,5 +2,37 @@
 {% block content %}
 
 
-
+<h1 style="text-align: center;">User Dashboard </h1>
+{% if courses %}
+<div class="row">
+    {% for course in courses %}
+    <div class="col">
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">{{course.name}}</h5>
+                {% if course.questions %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                        <th scope="col"> Question Id</th>
+                        <th scope="col">Question title</th>
+                        </tr>
+                    </thead>
+                    {% for question in course.questions %}
+                    <tbody>
+                        <tr>
+                        <td> {{question.id}} </td>
+                        <td> {{question.title}} </td>
+                        </tr>
+                    </tbody>
+                    {%endfor%}
+                </table>
+                {%endif%}
+                <a href="#" class="card-link">Card link</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{%endif%}
 {% endblock %}

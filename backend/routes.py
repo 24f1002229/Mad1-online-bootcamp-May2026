@@ -87,4 +87,64 @@ def delete_course(email,id):
     db.session.delete(dc)
     db.session.commit()
     return redirect(url_for("admin", email=email))
+
+
+def get_question(id):
+    questions = Question.query.filter_by(id=id).first()
+    return questions
+
+
+@app.route("/add_question/<course_id>/<email>", methods=["GET","POST"])
+def add_question(course_id,email):
+    if request.method == "POST":
+        id = request.form.get("id")
+        title = request.form.get("title")
+        question_statement = request.form.get("question_statement")
+        option1 = request.form.get("option1")
+        option2 = request.form.get("option2")
+        option3 = request.form.get("option3")
+        option4 = request.form.get("option4")
+        correct_option_key = request.form.get("correct_option")
+        correct_option_mapping = {"option1" : option1, "option2" : option2, "option3" : option3, "option4" : option4}
+        correct_option = correct_option_mapping.get(correct_option_key, "")
+        newquestion = Question(id=id, title=title, question_statement=question_statement, option1=option1, option2=option2, option3=option3, option4=option4, correct_option=correct_option, course_id=course_id)
+        db.session.add(newquestion)
+        db.session.commit()
+        return redirect(url_for("admin", email=email))
+    return render_template("add_question.html", course_id=course_id, email=email)
+
+
+@app.route("/edit_question/<id>/<email>", methods=["GET","POST"])
+def edit_question(id,email):
+    ques = get_question(id)
+    if request.method == "POST":
+        id = request.form.get("id")
+        title = request.form.get("title")
+        question_statement = request.form.get("question_statement")
+        option1 = request.form.get("option1")
+        option2 = request.form.get("option2")
+        option3 = request.form.get("option3")
+        option4 = request.form.get("option4")
+        correct_option = request.form.get("correct_option")
+        ques.id = id
+        ques.title = title
+        ques.question_statement = question_statement
+        ques.option1 = option1
+        ques.option2 = option2
+        ques.option3 = option3
+        ques.option4 = option4
+        ques.correct_option = correct_option
+        db.session.commit()
+        return redirect(url_for("admin", email=email))
+    return render_template("edit_question.html", question = ques, email=email)
+
+@app.route("/delete_question/<id>/<email>", methods=["GET","POST"])
+def delete_question(id,email):
+    dq = get_question(id)
+    db.session.delete(dq)
+    db.session.commit()
+    return redirect(url_for("admin",email=email))
+
+
+
         

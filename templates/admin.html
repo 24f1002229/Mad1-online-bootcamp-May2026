@@ -7,14 +7,35 @@
     <div class="row">
     {% for course in courses %}
     <div class="col">
-        <div class="card" style="width: 18rem;">
+        <div class="card" style="width: 22rem;">
         <div class="card-body">
             <h5 class="card-title"> {{course.name}} </h5>
-            <div class="card">
                 <div class="card-body">
-                    This is some text within a card body.
+                    {% if course.questions %}
+                    <table class="table">
+                        <thead>
+                            <tr>
+                            <th scope="col"> Question Id</th>
+                            <th scope="col">Question title</th>
+                            <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        {% for question in course.questions%}
+                        <tbody>
+                            <tr>
+                            <td> {{question.id}} </td>
+                            <td> {{question.title}} </td>
+                            <td>
+                                <a href="/edit_question/{{question.id}}/{{email}}" class="btn btn-info"> Edit Question</a>    
+                                <a href="/delete_question/{{question.id}}/{{email}}" class="btn btn-danger"> Delete question </a>    
+                            </td>
+                            </tr>
+                        </tbody>
+                        {%endfor%}
+                    </table>
+                    {%endif%}
                 </div>
-            </div>
+            <a href="/add_question/{{course.id}}/{{email}}" class="card-link"> Add Question</a>
             <a href="/edit_course/{{course.id}}/{{email}}" class="card-link">Edit Course</a>
             <a href="/delete_course/{{course.id}}/{{email}}" class="card-link">Delete Course</a>
         </div>
