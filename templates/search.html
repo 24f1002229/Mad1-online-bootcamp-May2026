@@ -1,0 +1,35 @@
+{% extends "Admin_dashboard.html" %}
+{% block content %}
+
+{% if users or courses %}
+{% if users %}
+{% for user in users %}
+<div class="card" style="width: 18rem;">
+  <div class="card-body">
+    <h5 class="card-title"> {{user.email}} </h5>
+    <a href="/user/{{user.email}}" class="card-link">Profile link</a>
+  </div>
+</div>
+{%endfor%}
+{%endif%}
+
+{% if courses %}
+{% for course in courses %}
+
+<div class="card" style="width: 18rem;">
+  <div class="card-body">
+    <h5 class="card-title">{{course.name}}</h5>
+    <a href="/edit_course/{{course.id}}/{{email}}" class="card-link">Edit Course</a>
+    <a href="/delete_course/{{course.id}}/{{email}}" class="card-link">Delete course</a>
+  </div>
+</div>
+
+{%endfor%}
+{%endif%}
+
+{%else%}
+<h4> No Result Found</h4>
+{%endif%}
+
+
+{% endblock %}

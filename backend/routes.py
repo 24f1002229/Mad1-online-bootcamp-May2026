@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 from app import app
 from .model import *
 
@@ -118,7 +118,6 @@ def add_question(course_id,email):
 def edit_question(id,email):
     ques = get_question(id)
     if request.method == "POST":
-        id = request.form.get("id")
         title = request.form.get("title")
         question_statement = request.form.get("question_statement")
         option1 = request.form.get("option1")
@@ -146,5 +145,68 @@ def delete_question(id,email):
     return redirect(url_for("admin",email=email))
 
 
+@app.route("/start_test/<course_id>/<email>", methods=["GET","POST"])
+def start_test(course_id, email):
+    questions = Question.query.filter_by(course_id=course_id).all()
+    total_questions = len(questions)
 
+    if request.args.get("restart") or "current_question" not in session or session.get("course_id") != course_id:
+        session["current_question"] = 0
+        session["score"] = 0
+        session["course_id"] = course_id
+
+    if total_questions == 0:
+        return "No Questions are in this course"
+    
+    if session["current_question"] >= total_questions:
+        return redirect(url_for("test_result", course_id=course_id, email=email))
+    
+    current_question = questions[session["current_question"]]
+
+    if request.method == "POST":
+        selected_option = request.form.get("option")
+        correct_option = current_question.correct_option
         
+        if selected_option and selected_option.strip().lower() == correct_option.strip().lower():
+            session["score"] += 1
+
+        session["current_question"] += 1
+        session.modified = True
+
+        return redirect(url_for("start_test", course_id=course_id, email=email))
+    return render_template("start_test.html", email=email, question = current_question, current_question = session["current_question"]+1, total_questions=total_questions, course_id=course_id)
+
+
+@app.route("/test_result/<course_id>/<email>", methods=["GET","POST"])
+def test_result(course_id, email):
+    user = User.query.filter_by(email=email).first()
+    total = session.get("score", 0)
+    total_questions = Question.query.filter_by(course_id=course_id).count()
+
+    existing = Scores.query.filter_by(user_id = user.id, course_id = course_id).first()
+
+    if existing:
+        existing.total_scored = total
+    else:
+        db.session.add(Scores(user_id = user.id, course_id= course_id, total_scored = total))
+        db.session.commit()
+
+    return render_template("result.html", course_id=course_id, email=email, total_scored = total, total_questions= total_questions)
+
+
+@app.route("/search/<email>", methods=["GET","POST"])
+def search_txt(email):
+    if request.method == "POST":
+        search_txt = request.form.get("search")
+        by_user = search_by_user(search_txt)
+        by_course = search_by_course(search_txt)
+        return render_template("search.html", email=email, users=by_user, courses=by_course)
+    
+
+def search_by_user(search_txt):
+    users = User.query.filter(User.email.ilike(f"%{search_txt}%")).all()
+    return users
+
+def search_by_course(search_txt):
+    courses = Course.query.filter(Course.name.ilike(f"%{search_txt}%")).all()
+    return courses

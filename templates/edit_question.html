@@ -4,10 +4,6 @@
 <h1 style="text-align: center;"> Edit Question form </h1>
 <form action="/edit_question/{{question.id}}/{{email}}" method="POST">
   <div class="mb-3">
-    <label for="number" class="form-label">Question Id</label>
-    <input type="number" class="form-control" id="number" name="id" value="{{question.id}}">
-  </div>
-  <div class="mb-3">
     <label for="text" class="form-label">Question title</label>
     <input type="text" class="form-control" id="text" name="title" value="{{question.title}}">
   </div>

@@ -1,0 +1,11 @@
+{% extends "User_dashboard.html"%}
+{% block content %}
+
+<h2> Test Result </h2>
+<p> Your Score: {{session["score"]}} / {{total_questions}} </p>
+
+<a class="btn btn-danger" href="{{url_for('start_test', course_id = course_id, email= email, restart=True)}}" role="button">Restart</a>
+<a class="btn btn-primary" href="/user/{{email}}" role="button">User Dashboard</a>
+
+
+{% endblock %}
